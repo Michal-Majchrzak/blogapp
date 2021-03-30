@@ -63,6 +63,21 @@ def list_drafts():
     return render_template('draft_list.html', all_drafts=all_drafts)
 
 
+@app.route('/delete/<int:entry_id>', methods=['POST'])
+@login_required
+def delete_entry(entry_id: int):
+    if request.method == 'POST':
+        entry = Entry.query.get(entry_id)
+        if entry:
+            db.session.delete(entry)
+            db.session.commit()
+            flash('Post został usunięty', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash(f'Brak postu o numerze ID: {entry_id}')
+            return redirect(url_for('index'))
+
+
 def create_or_edit_entry(**kwargs):
     # GET
     entry_id = kwargs.pop('entry_id', None)
