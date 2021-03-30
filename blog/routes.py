@@ -56,6 +56,13 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/drafts/', methods=['GET'])
+@login_required
+def list_drafts():
+    all_drafts = Entry.query.filter_by(is_published=False).order_by(Entry.pub_date.desc())
+    return render_template('draft_list.html', all_drafts=all_drafts)
+
+
 def create_or_edit_entry(**kwargs):
     # GET
     entry_id = kwargs.pop('entry_id', None)
